@@ -32,4 +32,4 @@ next_month = datetime.now()
 
 print(current_datetime < next_month)    # False
 
-# data delta
+
