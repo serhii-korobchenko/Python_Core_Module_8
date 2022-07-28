@@ -91,8 +91,18 @@ def get_birthdays_per_week (users):
 
     return grouped_birthdays
 
+def sort(list_dict):
+    current_date = datetime.now().date()
+    for item in list_dict:
+        event_date = datetime (year = current_date.year, month = item['birthday'].month, day = item['birthday'].day).date() ##
+    return event_date.toordinal()
+    
+
+
 ### Main BODY
 if __name__ == '__main__':
+    dict_sorted = users.sort(key=sort(users))
+
     dict = get_birthdays_per_week (users)
     for key, value in dict.items():
         print("{:<10}: {:<20}" .format(key, ', '.join(map(str, value))))               
