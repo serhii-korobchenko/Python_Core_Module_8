@@ -37,11 +37,12 @@ Requirements:
 
 from datetime import datetime, timedelta
 from collections import defaultdict
+from operator import itemgetter
 
 users = [
-    {'name': 'Bill', 'birthday': datetime(year=1980, month=7, day=29)},
+    {'name': 'Bill', 'birthday': datetime(year=1980, month=7, day=31)},
     {'name': 'John', 'birthday': datetime(year=1978, month=7, day=30)},
-    {'name': 'Glock', 'birthday': datetime(year=1922, month=7, day=31)},
+    {'name': 'Glock', 'birthday': datetime(year=1922, month=7, day=29)},
     {'name': 'Avel', 'birthday': datetime(year=1945, month=8, day=1)},
     {'name': 'David', 'birthday': datetime(year=2008, month=8, day=2)},
     {'name': 'Avatar', 'birthday': datetime(year=1960, month=8, day=3)},
@@ -81,7 +82,7 @@ def get_birthdays_per_week (users):
         event_date = datetime (year = current_date.year, month = item['birthday'].month, day = item['birthday'].day).date() ##
         
 
-        if event_date > current_date and event_date <= finish_date:
+        if event_date >= current_date and event_date < finish_date:
             if event_date.weekday() != 5 and event_date.weekday() != 6:
                 grouped_birthdays[days_translation(event_date.weekday())].append(item['name']) ### ?????
             elif event_date.weekday() == 5:
@@ -92,18 +93,26 @@ def get_birthdays_per_week (users):
     return grouped_birthdays
 
 def sort(list_dict):
+    changed_list = list_dict
     current_date = datetime.now().date()
-    for item in list_dict:
-        event_date = datetime (year = current_date.year, month = item['birthday'].month, day = item['birthday'].day).date() ##
-    return event_date.toordinal()
+    current_year = current_date.year
+
+    for item in changed_list:
+        new_datetime = item['birthday'].replace (year = current_year)
+        #print(new_datetime)
+        item['birthday'] = new_datetime
+
+    sorted_list =  sorted(changed_list, key=itemgetter('birthday')) 
+
+    return sorted_list
     
 
 
 ### Main BODY
 if __name__ == '__main__':
-    dict_sorted = users.sort(key=sort(users))
+    #print (sort(users))
 
-    dict = get_birthdays_per_week (users)
+    dict = get_birthdays_per_week (sort(users))
     for key, value in dict.items():
         print("{:<10}: {:<20}" .format(key, ', '.join(map(str, value))))               
     
